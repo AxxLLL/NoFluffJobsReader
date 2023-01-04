@@ -7,7 +7,7 @@ import java.util.Arrays;
 
 @RequiredArgsConstructor
 @Getter
-public enum SalaryType {
+public enum Employment {
 
     PERMANENT("permanent"),
     B2B("b2b"),
@@ -15,10 +15,10 @@ public enum SalaryType {
 
     private final String name;
 
-    public static SalaryType getByName(String name) {
-        return Arrays.stream(SalaryType.values())
+    public static Employment getByName(String name) {
+        return Arrays.stream(Employment.values())
                 .filter(val -> val.getName().equals(name))
                 .findFirst()
-                .orElseThrow(() -> new IllegalStateException(String.format("Cannot find salary type with name '%s'.", name)));
+                .orElseThrow(() -> new IllegalStateException(String.format("Cannot find employment type with name '%s'.", name)));
     }
 }

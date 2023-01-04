@@ -1,7 +1,7 @@
 package com.rzoltanski.nofluffjobsreader.domain;
 
 import com.rzoltanski.nofluffjobsreader.domain.enumeration.Category;
-import com.rzoltanski.nofluffjobsreader.domain.enumeration.SalaryType;
+import com.rzoltanski.nofluffjobsreader.domain.enumeration.Employment;
 import com.rzoltanski.nofluffjobsreader.domain.enumeration.Seniority;
 import com.rzoltanski.nofluffjobsreader.domain.enumeration.Technology;
 import lombok.Builder;
@@ -10,7 +10,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Builder
-public record Criteria (Set<Category> categories, Set<Technology> technologies, Set<Seniority> seniorities, Set<SalaryType> employments) {
+public record Criteria (Set<Category> categories, Set<Technology> technologies, Set<Seniority> seniorities, Set<Employment> employments) {
 
     public String toCriteriaBody() {
         StringBuilder builder = new StringBuilder("{\"rawSearch\":\"");
@@ -43,7 +43,7 @@ public record Criteria (Set<Category> categories, Set<Technology> technologies, 
          * Wyszukuje po alternatywie.
          * */
         if (employments != null && !employments.isEmpty()) {
-            String employmentsFilter = employments.stream().map(SalaryType::getName).collect(Collectors.joining(","));
+            String employmentsFilter = employments.stream().map(Employment::getName).collect(Collectors.joining(","));
             builder.append(" employment=").append(employmentsFilter);
         }
 

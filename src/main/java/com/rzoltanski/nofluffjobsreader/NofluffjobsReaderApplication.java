@@ -1,14 +1,15 @@
 package com.rzoltanski.nofluffjobsreader;
 
-import com.rzoltanski.nofluffjobsreader.domain.Criteria;
 import com.rzoltanski.nofluffjobsreader.domain.OfferDetails;
+import com.rzoltanski.nofluffjobsreader.domain.OfferFilter;
 import com.rzoltanski.nofluffjobsreader.domain.enumeration.Category;
 import com.rzoltanski.nofluffjobsreader.domain.enumeration.Currency;
+import com.rzoltanski.nofluffjobsreader.domain.enumeration.Employment;
 import com.rzoltanski.nofluffjobsreader.domain.enumeration.OfferStatus;
-import com.rzoltanski.nofluffjobsreader.domain.enumeration.SalaryType;
+import com.rzoltanski.nofluffjobsreader.domain.enumeration.SearchType;
 import com.rzoltanski.nofluffjobsreader.domain.enumeration.Seniority;
 import com.rzoltanski.nofluffjobsreader.domain.enumeration.Technology;
-import com.rzoltanski.nofluffjobsreader.service.NoFluffJobsService;
+import com.rzoltanski.nofluffjobsreader.service.OfferService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
@@ -30,31 +31,31 @@ public class NofluffjobsReaderApplication {
 	}
 
 	@Bean
-	ApplicationRunner applicationRunner(NoFluffJobsService service) {
+	ApplicationRunner applicationRunner(OfferService service) {
 		return args -> {
 
-
-//			client.getOfferDetails("VXANA6AY");
-
-			Criteria criteria = Criteria.builder()
-					.seniorities(Set.of(Seniority.MID))
-					.technologies(Set.of(Technology.JAVA))
-					.employments(Set.of(SalaryType.PERMANENT))
-					.categories(Set.of(Category.BACKEND))
+			OfferFilter.ElementsSearch<Seniority> seniorities = OfferFilter.ElementsSearch.<Seniority> builder()
+					.elements(Set.of(Seniority.MID))
+					.searchType(SearchType.CONTAINS_EXACTLY)
 					.build();
-			List<OfferDetails> collect = service.getOffers(criteria).stream()
-					.map(offer -> service.getOfferDetails(offer.getId()))
-					.toList();
 
+			OfferFilter.ElementsSearch<Employment> employments = OfferFilter.ElementsSearch.<Employment> builder()
+					.elements(Set.of(Employment.PERMANENT))
+					.searchType(SearchType.CONTAINS)
+					.build();
 
-			List<OfferDetails> filtered = collect.stream()
-					.filter(offer -> offer.getTechnology() == Technology.JAVA)
-					.filter(offer -> offer.getSeniority().contains(Seniority.MID) && offer.getSeniority().size() == 1)
-					.filter(offer -> offer.getSalary().getCurrency() == Currency.PLN)
-					.filter(offer -> offer.getSalary().getTypes().stream().anyMatch(type -> type.getType() == SalaryType.PERMANENT))
-					.filter(offer -> offer.getStatus() == OfferStatus.PUBLISHED)
-					.filter(offer -> offer.getPostedOrRenewedDaysAgo() <= 31)
-					.sorted(Comparator.comparing(o -> o.getSalary().getSalaryType(SalaryType.PERMANENT).getMin()))
+			OfferFilter criteria = OfferFilter.builder()
+					.seniorities(seniorities)
+					.requirements(Set.of(Technology.JAVA))
+					.employments(employments)
+					.categories(Set.of(Category.BACKEND))
+					.currency(Currency.PLN)
+					.offerStatus(OfferStatus.PUBLISHED)
+					.build();
+
+			List<OfferDetails> filtered = service.getOffers(criteria)
+					.stream()
+					.sorted(Comparator.comparing(o -> o.getSalary().getSalaryByEmploymentType(Employment.PERMANENT).getMin()))
 					.toList();
 
 			List<String> resultsAsString = filtered.stream()
@@ -62,7 +63,7 @@ public class NofluffjobsReaderApplication {
 						OfferDetails.Salary.Type permSalary = offer.getSalary()
 								.getTypes()
 								.stream()
-								.filter(type -> type.getType() == SalaryType.PERMANENT)
+								.filter(type -> type.getEmployment() == Employment.PERMANENT)
 								.findFirst()
 								.orElseThrow();
 						return permSalary.getMin() + " - " + permSalary.getMax() + " " + offer.getSalary().getCurrency() + " | " + offer.getTitle();

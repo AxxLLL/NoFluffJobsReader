@@ -3,8 +3,8 @@ package com.rzoltanski.nofluffjobsreader.domain;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.rzoltanski.nofluffjobsreader.domain.enumeration.Category;
 import com.rzoltanski.nofluffjobsreader.domain.enumeration.Currency;
+import com.rzoltanski.nofluffjobsreader.domain.enumeration.Employment;
 import com.rzoltanski.nofluffjobsreader.domain.enumeration.OfferStatus;
-import com.rzoltanski.nofluffjobsreader.domain.enumeration.SalaryType;
 import com.rzoltanski.nofluffjobsreader.domain.enumeration.Seniority;
 import com.rzoltanski.nofluffjobsreader.domain.enumeration.Technology;
 import io.micrometer.common.util.StringUtils;
@@ -97,9 +97,9 @@ public class OfferDetails {
                 .entrySet()
                 .stream()
                 .map(entry -> Salary.Type.builder()
-                        .type(SalaryType.getByName(entry.getKey()))
+                        .employment(Employment.getByName(entry.getKey()))
                         .period((String) entry.getValue().get("period"))
-                        .paidHoliday((boolean) entry.getValue().get("paidHoliday"))
+                        .paidHoliday((boolean) Optional.ofNullable(entry.getValue().get("paidHoliday")).orElse(false))
                         .min(((List<Integer>) entry.getValue().get("range")).get(0))
                         .max(((List<Integer>) entry.getValue().get("range")).get(1))
                         .build()
@@ -126,16 +126,16 @@ public class OfferDetails {
         @Builder
         @Data
         public static class Type {
-            private SalaryType type;
+            private Employment employment;
             private String period;
             private boolean paidHoliday;
             private Integer min;
             private Integer max;
         }
 
-        public Type getSalaryType(SalaryType type) {
+        public Type getSalaryByEmploymentType(Employment employment) {
             return this.types.stream()
-                    .filter(salary -> salary.getType() == type)
+                    .filter(salary -> salary.getEmployment() == employment)
                     .findFirst()
                     .orElseThrow();
         }

@@ -16,6 +16,7 @@ public enum Technology {
     SQL("SQL"),
     WEB_METHODS("webMethods"),
     DOT_NET(".NET"),
+    SCALA("Scala"),
     PYTHON("Python");
 
     private final String name;
