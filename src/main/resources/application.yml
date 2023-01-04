@@ -1,0 +1,4 @@
+application:
+  no-fluff-jobs-client:
+    base-url: https://nofluffjobs.com/
+    response-max-size: 16777216
