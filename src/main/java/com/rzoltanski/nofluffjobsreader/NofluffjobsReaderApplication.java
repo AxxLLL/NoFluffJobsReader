@@ -10,14 +10,19 @@ import com.rzoltanski.nofluffjobsreader.domain.enumeration.SearchType;
 import com.rzoltanski.nofluffjobsreader.domain.enumeration.Seniority;
 import com.rzoltanski.nofluffjobsreader.domain.enumeration.Technology;
 import com.rzoltanski.nofluffjobsreader.service.OfferService;
+import com.rzoltanski.nofluffjobsreader.utils.sorting.OfferSorter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 
-import java.util.Comparator;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Set;
 
@@ -31,7 +36,7 @@ public class NofluffjobsReaderApplication {
 	}
 
 	@Bean
-	ApplicationRunner applicationRunner(OfferService service) {
+	ApplicationRunner applicationRunner(OfferService service, OfferSorter permanentSalaryMinMaxOfferSorter) {
 		return args -> {
 
 			OfferFilter.ElementsSearch<Seniority> seniorities = OfferFilter.ElementsSearch.<Seniority> builder()
@@ -46,17 +51,33 @@ public class NofluffjobsReaderApplication {
 
 			OfferFilter criteria = OfferFilter.builder()
 					.seniorities(seniorities)
-					.requirements(Set.of(Technology.JAVA))
+					.technologies(Set.of(Technology.JAVA, Technology.JAVA_SPRING, Technology.SPRING))
 					.employments(employments)
 					.categories(Set.of(Category.BACKEND))
 					.currency(Currency.PLN)
 					.offerStatus(OfferStatus.PUBLISHED)
 					.build();
 
-			List<OfferDetails> filtered = service.getOffers(criteria)
-					.stream()
-					.sorted(Comparator.comparing(o -> o.getSalary().getSalaryByEmploymentType(Employment.PERMANENT).getMin()))
+			List<OfferDetails> filtered = permanentSalaryMinMaxOfferSorter.sort(service.getOffers(criteria));
+
+			List<String> csvResults = filtered.stream()
+					.map(offer -> {
+						OfferDetails.Salary.Type permanentSalary = offer.getSalary().getSalaryByEmploymentType(Employment.PERMANENT);
+						Currency currency = offer.getSalary().getCurrency();
+						String offerTitle = offer.getTitle();
+						String company = offer.getCompanyName();
+						String senioritiesStr = StringUtils.join(offer.getSeniority(), ",");
+						String technology = offer.getTechnology().getName();
+						String category = offer.getCategory().getName();
+						Integer renewedDaysAgo = offer.getPostedOrRenewedDaysAgo();
+						return permanentSalary.getMin() + ";" + permanentSalary.getMax() + ";" + currency + ";" + technology + ";" + category + ";" + senioritiesStr + ";" + offerTitle + ";" + company + ";" + renewedDaysAgo;
+					})
 					.toList();
+
+			DateTimeFormatter customFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd_HHmmss");
+			String formattedString = LocalDateTime.now().format(customFormat);
+
+			Files.write(Path.of("C:\\Users\\rafal\\Documents\\offers_" + formattedString  + ".csv"), csvResults);
 
 			List<String> resultsAsString = filtered.stream()
 					.map(offer -> {

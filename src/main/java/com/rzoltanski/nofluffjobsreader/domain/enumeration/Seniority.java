@@ -10,7 +10,8 @@ import java.util.Arrays;
 public enum Seniority {
 
     MID("Mid"),
-    SENIOR("Senior");
+    SENIOR("Senior"),
+    EXPERT("Expert");
 
     private final String name;
 

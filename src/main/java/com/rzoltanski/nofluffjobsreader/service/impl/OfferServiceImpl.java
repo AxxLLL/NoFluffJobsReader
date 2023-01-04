@@ -34,7 +34,6 @@ public class OfferServiceImpl implements OfferService {
         Criteria criteria = Criteria.builder()
                 .categories(filter.getCategories())
                 .seniorities(seniorities)
-                .technologies(filter.getRequirements())
                 .employments(employments)
                 .build();
 
@@ -56,6 +55,10 @@ public class OfferServiceImpl implements OfferService {
 
         if (filter.getCurrency() != null) {
             offersStream = offersStream.filter(offer -> offer.getSalary().getCurrency() == filter.getCurrency());
+        }
+
+        if (filter.getTechnologies() != null) {
+            offersStream = offersStream.filter(offer -> offer.getTechnology() != null && filter.getTechnologies().contains(offer.getTechnology()));
         }
 
         OfferFilter.MinMaxValue postedOrRenewed = filter.getPostedOrRenewed();

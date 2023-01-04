@@ -20,7 +20,7 @@ public class OfferFilter {
 
     private Set<Category> categories;
 
-    private Set<Technology> requirements;
+    private Set<Technology> technologies;
 
     private ElementsSearch<Seniority> seniorities;
 
