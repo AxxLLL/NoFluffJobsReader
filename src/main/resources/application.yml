@@ -5,3 +5,8 @@ application:
   no-fluff-jobs-client:
     base-url: https://nofluffjobs.com/
     response-max-size: 16777216
+  cache:
+    offersList:
+      time-to-live: 1M
+    offersDetails:
+      time-to-live: 1H

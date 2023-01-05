@@ -3,13 +3,12 @@ package com.rzoltanski.nofluffjobsreader.service.impl;
 import com.rzoltanski.nofluffjobsreader.domain.Criteria;
 import com.rzoltanski.nofluffjobsreader.domain.OfferDetails;
 import com.rzoltanski.nofluffjobsreader.domain.OfferFilter;
-import com.rzoltanski.nofluffjobsreader.domain.OfferList;
 import com.rzoltanski.nofluffjobsreader.domain.enumeration.Employment;
 import com.rzoltanski.nofluffjobsreader.domain.enumeration.SearchType;
 import com.rzoltanski.nofluffjobsreader.domain.enumeration.Seniority;
 import com.rzoltanski.nofluffjobsreader.service.NoFluffJobsService;
+import com.rzoltanski.nofluffjobsreader.service.NoFluffJobsServiceFactory;
 import com.rzoltanski.nofluffjobsreader.service.OfferService;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -23,10 +22,13 @@ import java.util.stream.Stream;
 
 @Service
 @Slf4j
-@RequiredArgsConstructor
 public class OfferServiceImpl implements OfferService {
 
     private final NoFluffJobsService noFluffJobsService;
+
+    public OfferServiceImpl(NoFluffJobsServiceFactory noFluffJobsServiceFactory) {
+        noFluffJobsService = noFluffJobsServiceFactory.getService();
+    }
 
     @Override
     public List<OfferDetails> getOffers(OfferFilter filter) {
