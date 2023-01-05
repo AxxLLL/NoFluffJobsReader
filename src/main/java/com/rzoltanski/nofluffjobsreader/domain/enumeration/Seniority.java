@@ -9,11 +9,11 @@ import java.util.Arrays;
 @Getter
 public enum Seniority {
 
-    TRAINEE("Trainee"),
+    EXPERT("Expert"),
     JUNIOR("Junior"),
     MID("Mid"),
     SENIOR("Senior"),
-    EXPERT("Expert");
+    TRAINEE("Trainee");
 
     private final String name;
 

@@ -9,10 +9,10 @@ import java.util.Arrays;
 @Getter
 public enum Employment {
 
-    PERMANENT("permanent"),
     B2B("b2b"),
-    UOD("uod"),
-    MANDATE_CONTRACT("zlecenie");
+    MANDATE_CONTRACT("zlecenie"),
+    PERMANENT("permanent"),
+    UOD("uod");
 
     private final String name;
 

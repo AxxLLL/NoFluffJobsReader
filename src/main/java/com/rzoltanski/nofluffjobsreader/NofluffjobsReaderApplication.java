@@ -13,7 +13,6 @@ import com.rzoltanski.nofluffjobsreader.service.OfferSaverService;
 import com.rzoltanski.nofluffjobsreader.service.OfferService;
 import com.rzoltanski.nofluffjobsreader.utils.offer.view.OffersResultView;
 import com.rzoltanski.nofluffjobsreader.utils.sorting.OfferSorter;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
@@ -24,7 +23,6 @@ import org.springframework.context.annotation.Bean;
 import java.util.List;
 import java.util.Set;
 
-@Slf4j
 @SpringBootApplication
 @EnableConfigurationProperties
 public class NofluffjobsReaderApplication {
