@@ -40,7 +40,7 @@ public class NofluffjobsReaderApplication {
 		return args -> {
 
 			OfferFilter.ElementsSearch<Seniority> seniorities = OfferFilter.ElementsSearch.<Seniority> builder()
-					.elements(Set.of(Seniority.MID))
+					.elements(Set.of(Seniority.JUNIOR))
 					.searchType(SearchType.CONTAINS_EXACTLY)
 					.build();
 
@@ -77,7 +77,9 @@ public class NofluffjobsReaderApplication {
 			DateTimeFormatter customFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd_HHmmss");
 			String formattedString = LocalDateTime.now().format(customFormat);
 
-			Files.write(Path.of("C:\\Users\\rafal\\Documents\\offers_" + formattedString  + ".csv"), csvResults);
+			Path tempFile = Files.createTempFile("offers_" + formattedString, ".csv");
+			Files.write(tempFile, csvResults);
+			log.info("Saved at path: '{}'", tempFile);
 
 			List<String> resultsAsString = filtered.stream()
 					.map(offer -> {

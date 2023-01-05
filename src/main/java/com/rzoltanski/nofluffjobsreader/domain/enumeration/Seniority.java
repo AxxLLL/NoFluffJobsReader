@@ -9,6 +9,8 @@ import java.util.Arrays;
 @Getter
 public enum Seniority {
 
+    TRAINEE("Trainee"),
+    JUNIOR("Junior"),
     MID("Mid"),
     SENIOR("Senior"),
     EXPERT("Expert");
