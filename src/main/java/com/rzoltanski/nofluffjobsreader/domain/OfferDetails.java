@@ -135,11 +135,10 @@ public class OfferDetails {
             private Integer max;
         }
 
-        public Type getSalaryByEmploymentType(Employment employment) {
+        public Optional<Type> getSalaryByEmploymentType(Employment employment) {
             return this.types.stream()
                     .filter(salary -> salary.getEmployment() == employment)
-                    .findFirst()
-                    .orElseThrow(() -> new IllegalStateException(String.format("Cannot find salary by employment type '%s'.", employment)));
+                    .findFirst();
         }
     }
 }

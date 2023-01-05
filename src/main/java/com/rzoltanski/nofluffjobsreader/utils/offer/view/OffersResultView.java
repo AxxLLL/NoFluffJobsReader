@@ -1,4 +1,4 @@
-package com.rzoltanski.nofluffjobsreader.utils.offer;
+package com.rzoltanski.nofluffjobsreader.utils.offer.view;
 
 import com.rzoltanski.nofluffjobsreader.domain.OfferDetails;
 

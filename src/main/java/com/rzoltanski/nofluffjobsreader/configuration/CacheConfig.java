@@ -9,7 +9,6 @@ import org.springframework.cache.support.SimpleCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.time.Duration;
 import java.util.List;
 
 @Configuration
@@ -22,7 +21,7 @@ public class CacheConfig {
         List<CaffeineCache> caches = properties.getCache()
                 .entrySet()
                 .stream()
-                .map(entry -> buildCache(entry.getKey(), entry.getValue().getTimeToLive()))
+                .map(entry -> buildCache(entry.getKey(), entry.getValue()))
                 .toList();
 
         SimpleCacheManager manager = new SimpleCacheManager();
@@ -30,9 +29,9 @@ public class CacheConfig {
         return manager;
     }
 
-    private CaffeineCache buildCache(String cacheName, Duration ttlDuration) {
+    private CaffeineCache buildCache(String cacheName, CacheProperties.Cache properties) {
         Cache<Object, Object> cacheTTL = Caffeine.newBuilder()
-                .expireAfterWrite(ttlDuration)
+                .expireAfterWrite(properties.getTimeToLive())
                 .build();
         return new CaffeineCache(cacheName, cacheTTL);
     }

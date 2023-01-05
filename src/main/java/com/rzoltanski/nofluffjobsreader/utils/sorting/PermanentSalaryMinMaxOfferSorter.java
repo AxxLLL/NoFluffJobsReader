@@ -7,14 +7,21 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 @Component("permanentSalaryMinMaxOfferSorter")
 public class PermanentSalaryMinMaxOfferSorter implements OfferSorter {
 
     private static final Comparator<OfferDetails> minSalaryComparator =
-            Comparator.comparing(o -> o.getSalary().getSalaryByEmploymentType(Employment.PERMANENT).getMin());
+            Comparator.comparing(o -> {
+                OfferDetails.Salary.Type salary = o.getSalary().getSalaryByEmploymentType(Employment.PERMANENT).orElseThrow();
+                return salary.getMin();
+            });
     private static final Comparator<OfferDetails> maxSalaryComparator =
-            Comparator.comparing(o -> o.getSalary().getSalaryByEmploymentType(Employment.PERMANENT).getMax() == null ? 0 : o.getSalary().getSalaryByEmploymentType(Employment.PERMANENT).getMax());
+            Comparator.comparing(o -> {
+                OfferDetails.Salary.Type salary = o.getSalary().getSalaryByEmploymentType(Employment.PERMANENT).orElseThrow();
+                return Objects.requireNonNullElse(salary.getMax(), 0);
+            });
 
     @Override
     public List<OfferDetails> sort(List<OfferDetails> offers) {
