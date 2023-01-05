@@ -11,6 +11,8 @@ public class NoFluffJobsClientProperties {
 
     private String baseUrl;
 
+    private String jobDetailsUrl;
+
     private int responseMaxSize;
 
     private boolean useCache = true;

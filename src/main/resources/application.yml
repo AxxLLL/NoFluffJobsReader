@@ -3,7 +3,8 @@ server:
 
 application:
   no-fluff-jobs-client:
-    base-url: https://nofluffjobs.com/
+    base-url: https://nofluffjobs.com
+    job-details-url: '${application.no-fluff-jobs-client.base-url}/pl/job/'
     response-max-size: 16777216
   cache:
     offersList:
