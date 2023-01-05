@@ -29,14 +29,16 @@ public class BasicPermanentSalaryOffersResultView implements OffersResultView<St
                             permanentSalary.getMax(),
                             offer.getSalary().getCurrency(),
                             permanentSalary.getPeriod(),
-                            offer.getTitle().replace(";", "|"),
                             StringUtils.join(offer.getSeniority(), ","),
                             offer.getTechnology().getName(),
-                            offer.getPosted(),
+                            offer.getTitle().replace(";", "|"),
                             offer.getCompanyName().replace(";", "|"),
-                            offer.getStatus(),
+                            String.join(", ",offer.getMustHaveRequirements()),
+                            String.join(", ",offer.getNiceToHaveRequirements()),
+                            noFluffJobsClientProperties.getJobDetailsUrl() + offer.getPostingUrl(),
+                            offer.getPosted(),
                             offer.getId(),
-                            noFluffJobsClientProperties.getJobDetailsUrl() + offer.getPostingUrl()
+                            offer.getStatus()
                     );
                 })
                 .map(values -> values.stream().map(Object::toString).collect(Collectors.toList()))

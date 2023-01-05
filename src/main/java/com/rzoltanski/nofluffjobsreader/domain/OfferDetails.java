@@ -13,6 +13,7 @@ import lombok.Data;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,6 +47,10 @@ public class OfferDetails {
     private LocalDateTime posted;
 
     private Integer postedOrRenewedDaysAgo;
+
+    private List<String> mustHaveRequirements;
+
+    private List<String> niceToHaveRequirements;
 
     @JsonProperty("company")
     private void unpackCompany(Map<String, Object> company) {
@@ -110,6 +115,30 @@ public class OfferDetails {
         salary.setTypes(types);
 
         this.salary = salary;
+    }
+
+    @JsonProperty("requirements")
+    private void unpackRequirements(Map<String, Object> requirements) {
+
+        ArrayList<LinkedHashMap<String, String>> mustHaveRequirements = (ArrayList<LinkedHashMap<String, String>>) requirements.get("musts");
+        if (mustHaveRequirements != null) {
+            this.mustHaveRequirements = mustHaveRequirements
+                    .stream()
+                    .flatMap(element -> element.entrySet().stream())
+                    .filter(entry -> entry.getKey().equals("value"))
+                    .map(Map.Entry::getValue)
+                    .collect(Collectors.toList());
+        }
+
+        ArrayList<LinkedHashMap<String, String>> niceToHaveRequirements = (ArrayList<LinkedHashMap<String, String>>) requirements.get("nices");
+        if (niceToHaveRequirements != null) {
+            this.niceToHaveRequirements = niceToHaveRequirements
+                    .stream()
+                    .flatMap(element -> element.entrySet().stream())
+                    .filter(entry -> entry.getKey().equals("value"))
+                    .map(Map.Entry::getValue)
+                    .collect(Collectors.toList());
+        }
     }
 
     @Data
