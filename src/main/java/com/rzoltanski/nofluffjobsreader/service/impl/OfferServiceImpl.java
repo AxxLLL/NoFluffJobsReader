@@ -3,12 +3,14 @@ package com.rzoltanski.nofluffjobsreader.service.impl;
 import com.rzoltanski.nofluffjobsreader.domain.Criteria;
 import com.rzoltanski.nofluffjobsreader.domain.OfferDetails;
 import com.rzoltanski.nofluffjobsreader.domain.OfferFilter;
+import com.rzoltanski.nofluffjobsreader.domain.OfferList;
 import com.rzoltanski.nofluffjobsreader.domain.enumeration.Employment;
 import com.rzoltanski.nofluffjobsreader.domain.enumeration.SearchType;
 import com.rzoltanski.nofluffjobsreader.domain.enumeration.Seniority;
 import com.rzoltanski.nofluffjobsreader.service.NoFluffJobsService;
 import com.rzoltanski.nofluffjobsreader.service.OfferService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -20,6 +22,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class OfferServiceImpl implements OfferService {
 
@@ -39,7 +42,15 @@ public class OfferServiceImpl implements OfferService {
 
         List<OfferDetails> offers = noFluffJobsService.getOffers(criteria)
                 .stream()
-                .map(offer -> noFluffJobsService.getOfferDetails(offer.getId()))
+                .map(offer -> {
+                    try {
+                        return noFluffJobsService.getOfferDetails(offer.getId());
+                    } catch (Exception e) {
+                        log.error("Exception: {}", e.getMessage());
+                        return null;
+                    }
+                })
+                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
 
         return applyFilters(offers, filter);

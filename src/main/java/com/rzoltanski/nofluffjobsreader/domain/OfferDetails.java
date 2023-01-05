@@ -96,14 +96,16 @@ public class OfferDetails {
         List<Salary.Type> types = ((LinkedHashMap<String, LinkedHashMap<String, Object>>) originalSalary.get("types"))
                 .entrySet()
                 .stream()
-                .map(entry -> Salary.Type.builder()
-                        .employment(Employment.getByName(entry.getKey()))
-                        .period((String) entry.getValue().get("period"))
-                        .paidHoliday((boolean) Optional.ofNullable(entry.getValue().get("paidHoliday")).orElse(false))
-                        .min(((List<Integer>) entry.getValue().get("range")).get(0))
-                        .max(((List<Integer>) entry.getValue().get("range")).get(1))
-                        .build()
-                )
+                .map(entry -> {
+                    List<Integer> range = (List<Integer>) entry.getValue().get("range");
+                    return Salary.Type.builder()
+                            .employment(Employment.getByName(entry.getKey()))
+                            .period((String) entry.getValue().get("period"))
+                            .paidHoliday((boolean) Optional.ofNullable(entry.getValue().get("paidHoliday")).orElse(false))
+                            .min(range.get(0))
+                            .max(range.size() == 2 ? range.get(1) : null)
+                            .build();
+                })
                 .collect(Collectors.toList());
         salary.setTypes(types);
 
@@ -137,7 +139,7 @@ public class OfferDetails {
             return this.types.stream()
                     .filter(salary -> salary.getEmployment() == employment)
                     .findFirst()
-                    .orElseThrow();
+                    .orElseThrow(() -> new IllegalStateException(String.format("Cannot find salary by employment type '%s'.", employment)));
         }
     }
 }

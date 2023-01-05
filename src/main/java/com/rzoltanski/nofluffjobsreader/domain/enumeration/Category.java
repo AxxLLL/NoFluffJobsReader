@@ -10,7 +10,18 @@ import java.util.Arrays;
 public enum Category {
 
     BACKEND("backend"),
+    SALES("sales"),
+    OTHER("other"),
+    UX("ux"),
+    BACKOFFICE("backoffice"),
+    HR("hr"),
+    AGILE("agile"),
+    GAMING("gaming"),
+    SUPPORT("support"),
     BIG_DATA("bigData"),
+    BUSINESS_INTELLIGENCE("businessIntelligence"),
+    BUSINESS_ANALYST("businessAnalyst"),
+    MARKETING("marketing"),
     TESTING("testing"),
     DEVOPS("devops"),
     SECURITY("security"),

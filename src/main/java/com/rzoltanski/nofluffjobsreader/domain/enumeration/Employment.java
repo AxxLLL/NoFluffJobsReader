@@ -11,6 +11,7 @@ public enum Employment {
 
     PERMANENT("permanent"),
     B2B("b2b"),
+    UOD("uod"),
     MANDATE_CONTRACT("zlecenie");
 
     private final String name;

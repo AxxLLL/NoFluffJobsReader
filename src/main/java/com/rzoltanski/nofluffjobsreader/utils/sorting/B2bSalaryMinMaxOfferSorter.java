@@ -8,13 +8,13 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-@Component("permanentSalaryMinMaxOfferSorter")
-public class PermanentSalaryMinMaxOfferSorter implements OfferSorter {
+@Component("b2bSalaryMinMaxOfferSorter")
+public class B2bSalaryMinMaxOfferSorter implements OfferSorter {
 
     private static final Comparator<OfferDetails> minSalaryComparator =
-            Comparator.comparing(o -> o.getSalary().getSalaryByEmploymentType(Employment.PERMANENT).getMin());
+            Comparator.comparing(o -> o.getSalary().getSalaryByEmploymentType(Employment.B2B).getMin());
     private static final Comparator<OfferDetails> maxSalaryComparator =
-            Comparator.comparing(o -> o.getSalary().getSalaryByEmploymentType(Employment.PERMANENT).getMax() == null ? 0 : o.getSalary().getSalaryByEmploymentType(Employment.PERMANENT).getMax());
+            Comparator.comparing(o -> o.getSalary().getSalaryByEmploymentType(Employment.B2B).getMax() == null ? 0 : o.getSalary().getSalaryByEmploymentType(Employment.B2B).getMax());
 
     @Override
     public List<OfferDetails> sort(List<OfferDetails> offers) {
